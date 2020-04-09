@@ -1,45 +1,44 @@
 package main
 
 import (
+	"fmt"
 	"gioui.org/f32"
 	"gioui.org/io/pointer"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
-	"gioui.org/widget"
-	"github.com/gioapp/fbw/theme"
+	"github.com/gioapp/gel"
+	"github.com/gioapp/gelook"
 	"image"
 	"image/color"
-	"io/ioutil"
-	"log"
-	"os"
 	"time"
 )
 
 type DuoUIfbw struct {
-	spaces  []*DuoUIfbwSpace
-	details *DuoUIfbwDetails
-	theme   *theme.Theme
+	allSpaces   spaces
+	details     *DuoUIfbwDetails
+	theme       *gelook.DuoUItheme
+	headerPath  string
+	mainList    *layout.List
+	topMenuList *layout.List
+	detailsList *layout.List
+	cursor      cursor
 }
 
-type DuoUIfbwSpace struct {
-	path                string
-	parent              string
-	fullPath            string
-	thingsFromSpace     map[string]*DuoUIfbwThing
-	listThingsFromSpace []os.FileInfo
-}
+type cursor *DuoUIfbwThing
 
 type DuoUIfbwThing struct {
-	Name            string
-	Type            string
-	out             interface{}
-	pressed         bool
-	selected        bool
-	details         *DuoUIfbwDetails
-	check           *widget.CheckBox
-	thingsFromSpace []*DuoUIfbwThing
+	Name             string
+	Type             string
+	out              interface{}
+	pressed          bool
+	selected         bool
+	details          *DuoUIfbwDetails
+	check            *gel.CheckBox
+	parentSpaceIndex int
+	thingsFromSpace  []*DuoUIfbwThing
 }
+
 type DuoUIfbwDetails struct {
 	filename string
 	fullPath string
@@ -49,13 +48,33 @@ type DuoUIfbwDetails struct {
 	ModTime  time.Time
 }
 
-func (t *DuoUIfbwThing) Layout(th *theme.Theme, thingName string, col color.RGBA, gtx *layout.Context) {
+func (f *DuoUIfbw) spaces() (s []DuoUIfbwSpace) {
+	i := 0
+	for index, space := range f.allSpaces {
+		if index == i {
+			s = append(s, space)
+			i++
+		}
+	}
+	return
+}
+
+func (t *DuoUIfbwThing) Layout(c *cursor, s *spaces, th *gelook.DuoUItheme, thingName string, col color.RGBA, gtx *layout.Context) {
 	for _, e := range gtx.Events(t) {
 		if e, ok := e.(pointer.Event); ok {
 			switch e.Type {
 			case pointer.Press:
 				t.pressed = true
 				t.selected = true
+				*c = t
+				if t.Type == "space" {
+					s.NewDuoUIspace(t.parentSpaceIndex+1, "/"+t.Name)
+					fmt.Println(t.details.fullPath)
+					fmt.Println(t.details.filename)
+					fmt.Println("oooooooooooooooooooooooooooooooooooooooooooooooo")
+					fmt.Println(t.details)
+				}
+
 			case pointer.Release:
 				t.pressed = false
 			}
@@ -63,13 +82,14 @@ func (t *DuoUIfbwThing) Layout(th *theme.Theme, thingName string, col color.RGBA
 	}
 	if t.pressed {
 		col = color.RGBA{A: 0xff, R: 0x30, G: 0xcf, B: 0xcf}
+
 	}
 	pointer.Rect(
 		image.Rectangle{Max: image.Point{X: 500, Y: 500}},
 	).Add(gtx.Ops)
 	pointer.InputOp{Key: t}.Add(gtx.Ops)
 	drawSquare(gtx.Ops, col)
-	th.CheckBox(thingName).Layout(gtx, t.check)
+	th.DuoUIcheckBox(thingName, "", "").Layout(gtx, t.check)
 }
 
 func drawSquare(ops *op.Ops, color color.RGBA) {
@@ -78,47 +98,4 @@ func drawSquare(ops *op.Ops, color color.RGBA) {
 	}
 	paint.ColorOp{Color: color}.Add(ops)
 	paint.PaintOp{Rect: square}.Add(ops)
-}
-
-func (s *DuoUIfbwSpace) listThings(gtx *layout.Context, th *theme.Theme) func() {
-	return func() {
-		list := &layout.List{
-			Axis: layout.Vertical,
-		}
-		list.Layout(gtx, len(s.listThingsFromSpace), func(i int) {
-			col := color.RGBA{A: 0xff, R: 0xcf, G: 0xcf, B: 0x30}
-			if s.listThingsFromSpace[i].IsDir() {
-			} else {
-				col = color.RGBA{A: 0xff, R: 0xcf, G: 0x30, B: 0x30}
-			}
-			s.thingsFromSpace[s.listThingsFromSpace[i].Name()].Layout(th, s.listThingsFromSpace[i].Name(), col, gtx)
-		})
-	}
-}
-
-func (s *DuoUIfbwSpace) getThingsFromSpace() (err error) {
-	if s.path == "" {
-		s.path = "/"
-	}
-	s.listThingsFromSpace, err = ioutil.ReadDir(s.path)
-	if err != nil {
-		log.Fatal(err)
-	}
-	s.thingsFromSpace = make(map[string]*DuoUIfbwThing)
-	for _, t := range s.listThingsFromSpace {
-		details := &DuoUIfbwDetails{
-			Mode:    t.Mode().String(),
-			Size:    t.Size(),
-			ModTime: t.ModTime(),
-		}
-		s.thingsFromSpace[t.Name()] = &DuoUIfbwThing{
-			Name:    t.Name(),
-			details: details,
-			check:   new(widget.CheckBox),
-		}
-		if t.IsDir() {
-			s.thingsFromSpace[t.Name()].Type = "space"
-		}
-	}
-	return
 }

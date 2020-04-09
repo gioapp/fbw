@@ -2,6 +2,12 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 gioui.org v0.0.0-20200302163459-9bbeb92b614c h1:QExE9puc2dj7HEh4Y5e05buQ3QhVSXEWlbKWftvVRcE=
 gioui.org v0.0.0-20200302163459-9bbeb92b614c/go.mod h1:AHI9rFr6AEEHCb8EPVtb/p5M+NMJRKH58IOp8O3Je04=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/gioapp/fonts v0.0.0-20200409222643-fe2f7511f609 h1:qjUSusZTyu8f3WcUKQ9sv3tLyBXDjxqfW0gpDI6FOZw=
+github.com/gioapp/fonts v0.0.0-20200409222643-fe2f7511f609/go.mod h1:qFhRk/o6G2pBQdJWAcqoeEVTHs8v5x6aof7DkL9beCA=
+github.com/gioapp/gel v0.0.0-20200409221700-20b9d9a366f9 h1:+ISf3FsdEHo+Fk56ebdf9Qj6OKIQh4oFZsOlKTrm89s=
+github.com/gioapp/gel v0.0.0-20200409221700-20b9d9a366f9/go.mod h1:62fr52z5UXL14elSb9ivSwJUmJITmbyxjiv6GanDCSE=
+github.com/gioapp/gelook v0.0.0-20200409222352-89e6beb344a9 h1:oXqgUAW8r5Y+PjDeF5kFt6zt0A/kaXh7zQO44uMZJmE=
+github.com/gioapp/gelook v0.0.0-20200409222352-89e6beb344a9/go.mod h1:qQhh+EJa7q0kFTwIm03HUGG3sTbFTsWaNkBJvIqbaqI=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
