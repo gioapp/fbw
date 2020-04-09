@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"gioui.org/app"
-	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/unit"
+	"github.com/gioapp/fonts"
 	"github.com/gioapp/gelook"
 )
 
@@ -28,7 +28,8 @@ func NewDuoUIfbw() *DuoUIfbw {
 }
 
 func main() {
-	gofont.Register()
+	fonts.Register()
+
 	fbw := NewDuoUIfbw()
 	fbw.allSpaces.NewDuoUIspace(0, "/")
 	//root := newDuoUIfbwSpace("/")
