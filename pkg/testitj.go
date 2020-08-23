@@ -2,27 +2,22 @@ package main
 
 import (
 	"flag"
-	"gioui.org/app"
-	_ "gioui.org/app/permission/storage"
-	"gioui.org/font/gofont"
-	"gioui.org/io/system"
-	"gioui.org/layout"
-	"gioui.org/op"
-	"gioui.org/unit"
-	"gioui.org/widget"
-	"gioui.org/widget/material"
-	"github.com/gioapp/fbw/pkg/logger"
-	"golang.org/x/exp/shiny/materialdesign/icons"
-	"log"
 	"os"
+
 	//"github.com/ViBiOh/auth/v2/pkg/ident/basic"
 	//authMiddleware "github.com/ViBiOh/auth/v2/pkg/middleware"
 	//basicMemory "github.com/ViBiOh/auth/v2/pkg/store/memory"
 	"github.com/gioapp/fbw/pkg/crud"
-	"github.com/gioapp/fbw/pkg/files"
+	"github.com/gioapp/fbw/pkg/fibr"
 	"github.com/gioapp/fbw/pkg/filesystem"
 	"github.com/gioapp/fbw/pkg/renderer"
 	"github.com/gioapp/fbw/pkg/thumbnail"
+	//"github.com/gioapp/fbw/pkg/alcotest"
+	//"github.com/gioapp/fbw/pkg/flags"
+	//"github.com/gioapp/fbw/pkg/httputils"
+	"github.com/gioapp/fbw/pkg/logger"
+	//"github.com/gioapp/fbw/pkg/owasp"
+	//"github.com/gioapp/fbw/pkg/prometheus"
 )
 
 //func newLoginApp(basicConfig basicMemory.Config) authMiddleware.App {
@@ -33,38 +28,7 @@ import (
 //	return authMiddleware.New(basicApp, basicProviderProvider)
 //}
 
-func Newfbw(path string) *fbw {
-	return &fbw{
-		//allSpaces: make(map[int]fbwSpace),
-		theme:          material.NewTheme(gofont.Collection()),
-		iconFolder:     mustIcon(widget.NewIcon(icons.FileFolder)),
-		iconFolderOpen: mustIcon(widget.NewIcon(icons.FileFolderOpen)),
-		iconFile:       mustIcon(widget.NewIcon(icons.FileAttachment)),
-
-		topMenuList: &layout.List{
-			Axis: layout.Horizontal,
-		},
-		mainList: &layout.List{
-			Axis: layout.Horizontal,
-		},
-		detailsList: &layout.List{
-			Axis: layout.Horizontal,
-		},
-		path: []string{path},
-	}
-}
-
-//col := color.RGBA{A: 0xff, R: 0x30, G: 0xcf, B: 0xcf}
-//fbw.spaces = append(fbw.spaces, root)
-//fbw.headerPath = fbw.cursor.Name
-//itemValue := item{
-//	i: 0,
-//}
-//list := &layout.List{
-//	Axis: layout.Horizontal,
-//}
 func main() {
-
 	fs := flag.NewFlagSet("fibr", flag.ExitOnError)
 
 	//serverConfig := httputils.Flags(fs, "")
@@ -98,9 +62,8 @@ func main() {
 	//if !*disableAuth {
 	//	middlewareApp = newLoginApp(basicConfig)
 	//}
-	f := Newfbw("")
 
-	f.fibr = files.New(crudApp, rendererApp)
+	fibrApp := files.New(crudApp, rendererApp, middlewareApp)
 
 	go thumbnailApp.Start()
 	go crudApp.Start()
@@ -109,43 +72,4 @@ func main() {
 	//server.Middleware(prometheus.New(prometheusConfig).Middleware)
 	//server.Middleware(owasp.New(owaspConfig).Middleware)
 	//server.ListenServeWait(fibrApp.Handler())
-
-	//currentFolder = make(chan I)
-
-	//fbw.allSpaces.NewDuoUIspace(0, "/")
-	//root := newfbwSpace("/")
-	//root.getThingsFromSpace()
-
-	f.handle()
-
-	go func() {
-		if err := f.loop(app.NewWindow(app.Size(unit.Dp(800), unit.Dp(650)))); err != nil {
-			log.Fatal(err)
-		}
-	}()
-	app.Main()
-}
-
-func (f *fbw) loop(w *app.Window) error {
-	var o op.Ops
-	for {
-		select {
-		case e := <-w.Events():
-			switch e := e.(type) {
-			case system.DestroyEvent:
-				return e.Err
-			case system.FrameEvent:
-				c := layout.NewContext(&o, e)
-				f.appMain(c)
-				e.Frame(c.Ops)
-			}
-		}
-	}
-}
-
-func mustIcon(ic *widget.Icon, err error) *widget.Icon {
-	if err != nil {
-		panic(err)
-	}
-	return ic
 }

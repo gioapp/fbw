@@ -4,10 +4,12 @@ import (
 	"gioui.org/layout"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/gioapp/fbw/pkg/files"
 	"time"
 )
 
 type fbw struct {
+	fibr           files.App
 	theme          *material.Theme
 	iconFolder     *widget.Icon
 	iconFolderOpen *widget.Icon
@@ -19,8 +21,6 @@ type fbw struct {
 	detailsList    *layout.List
 	path           []string
 }
-
-type cursor *fbwThing
 
 type fbwThing struct {
 	Name             string
@@ -42,15 +42,3 @@ type fbwDetails struct {
 	Mode     string
 	ModTime  time.Time
 }
-
-//
-//func (f *fbw) spaces() (s []fbwThing) {
-//	i := 0
-//	for index, space := range f.fbwThing {
-//		if index == i {
-//			s = append(s, space)
-//			i++
-//		}
-//	}
-//	return
-//}

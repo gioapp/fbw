@@ -1,4 +1,4 @@
-package main
+package item
 
 import (
 	"fmt"
@@ -7,24 +7,24 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/gioapp/fbw/pkg/lyt"
 	"github.com/gioapp/gel/helper"
-	"github.com/w-ingsolutions/c/pkg/lyt"
 	"image"
 )
 
-type ItemButton struct {
+type Item struct {
 	Theme      *material.Theme
 	Button     *widget.Clickable
 	Check      *widget.Bool
 	Name       string
-	Type       uint8
+	Type       string
 	Size       int64
 	IconFolder *widget.Icon
 	IconDots   *widget.Icon
 }
 
-func ItemBtn(t *material.Theme, b *widget.Clickable, c *widget.Bool, iconFolder, iconDots *widget.Icon, name string, fileType uint8, size int64) ItemButton {
-	return ItemButton{
+func ItemBtn(t *material.Theme, b *widget.Clickable, c *widget.Bool, iconFolder, iconDots *widget.Icon, name, fileType string, size int64) Item {
+	return Item{
 		Theme:      t,
 		Button:     b,
 		Check:      c,
@@ -36,7 +36,7 @@ func ItemBtn(t *material.Theme, b *widget.Clickable, c *widget.Bool, iconFolder,
 	}
 }
 
-func (b ItemButton) Layout(gtx layout.Context) layout.Dimensions {
+func (b Item) Layout(gtx layout.Context) layout.Dimensions {
 	return lyt.Format(gtx, "hflexb(middle,r(_),f(0.8,_),r(_),f(0.2,_),r(_))",
 		func(gtx layout.Context) layout.Dimensions {
 			return material.CheckBox(b.Theme, b.Check, "").Layout(gtx)
